@@ -25,6 +25,10 @@ class HitboxConfig {
     @Switch(name = "Different Color on Hover")
     var hoverColor = false
 
+    @DependOn(["accurate"])
+    @Switch(name = "Show above ground")
+    var aboveGround = false
+
     @Checkbox(name = "Sides", size = 2)
     var showSide = false
 

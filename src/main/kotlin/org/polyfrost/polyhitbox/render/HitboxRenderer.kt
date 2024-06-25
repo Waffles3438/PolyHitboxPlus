@@ -82,8 +82,15 @@ object HitboxRenderer {
         }
 
         val eyeHeight = entity.eyeHeight.toDouble()
-        var hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY, -entity.posZ)
-        if (config.accurate) {
+        var hitbox: AxisAlignedBB
+
+        if(config.aboveGround) {hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY+0.101-0.05, -entity.posZ)}
+        else {hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY, -entity.posZ)}
+
+        if (config.accurate && config.aboveGround) {
+            val border = entity.collisionBorderSize.toDouble()
+            hitbox = hitbox.expand(border, border-0.055, border)
+        } else if(config.accurate && !config.aboveGround){
             val border = entity.collisionBorderSize.toDouble()
             hitbox = hitbox.expand(border, border, border)
         }
