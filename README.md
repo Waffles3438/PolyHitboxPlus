@@ -9,6 +9,7 @@ A hitbox modification mod
 ## Features
 
 - Toggle Keybind
+- Show above ground
 - Show Condition - Always / Hovered / Toggled / Never
 - Line Style - Normal / Proportioned / Dashed
 - Hovered Color
