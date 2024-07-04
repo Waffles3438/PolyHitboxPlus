@@ -5,9 +5,11 @@ import cc.polyfrost.oneconfig.events.event.KeyInputEvent
 import cc.polyfrost.oneconfig.events.event.Stage
 import cc.polyfrost.oneconfig.events.event.TickEvent
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
+import cc.polyfrost.oneconfig.utils.commands.CommandManager
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
+import org.polyfrost.polyhitbox.commands.ModCommand
 import org.polyfrost.polyhitbox.config.ModConfig
 
 @Mod(
@@ -25,6 +27,7 @@ object PolyHitbox {
     fun onFMLInitialization(event: FMLInitializationEvent) {
         ModConfig
         EventManager.INSTANCE.register(this)
+        CommandManager.INSTANCE.registerCommand(ModCommand())
     }
 
     private var lastEnabled = false

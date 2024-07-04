@@ -19,4 +19,6 @@ public class EntityRendererMixin {
     private void end(float partialTicks, long finishTimeNano, CallbackInfo ci) {
         HitboxRenderer.INSTANCE.setDrawingWorld(false);
     }
+
+
 }

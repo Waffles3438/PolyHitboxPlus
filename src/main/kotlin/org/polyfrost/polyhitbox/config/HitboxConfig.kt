@@ -29,6 +29,9 @@ class HitboxConfig {
     @Switch(name = "Show above ground")
     var aboveGround = false
 
+    @Switch(name = "ESP")
+    var ESP = false
+
     @Checkbox(name = "Sides", size = 2)
     var showSide = false
 

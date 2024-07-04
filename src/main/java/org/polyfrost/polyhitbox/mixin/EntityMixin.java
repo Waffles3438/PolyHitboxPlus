@@ -7,6 +7,11 @@ import org.polyfrost.polyhitbox.config.ModConfig;
 import org.polyfrost.polyhitbox.hooks.EntityHook;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.lang.annotation.Inherited;
 
 @Mixin(Entity.class)
 public class EntityMixin implements EntityHook {

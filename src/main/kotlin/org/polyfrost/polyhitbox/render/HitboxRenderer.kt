@@ -2,9 +2,13 @@ package org.polyfrost.polyhitbox.render
 
 import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.utils.dsl.mc
-import net.minecraft.client.renderer.*
+import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.RenderHelper
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.WorldRenderer
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.entity.Entity
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MovingObjectPosition
 import net.minecraftforge.client.event.RenderWorldLastEvent
@@ -23,6 +27,9 @@ object HitboxRenderer {
     data class RenderInfo(val config: HitboxConfig, val entity: Entity, val x: Double, val y: Double, val z: Double, val partialTicks: Float)
 
     private val renderQueue = ArrayList<RenderInfo>()
+
+    val list = ArrayList<String>()
+    val playerNames = ArrayList<String>()
 
     var drawingWorld = false
 
@@ -55,6 +62,32 @@ object HitboxRenderer {
         }
     }
 
+    fun getAllPlayerNamesFromTabList(): ArrayList<String> {
+        val playerNames = java.util.ArrayList<String>()
+        val netHandler = Minecraft.getMinecraft().netHandler
+
+        if (netHandler != null) {
+            for (info in netHandler.playerInfoMap) {
+                playerNames.add(info.gameProfile.name)
+            }
+        }
+
+        return playerNames
+    }
+
+    fun isBot(entity: Entity): Boolean {
+        return if (entity is EntityPlayer && (entity.displayNameString.contains("§c") || entity.displayNameString.contains("[NPC]") || entity.displayNameString.contains("[BOT]") || entity.displayNameString.contains("iAT3") || entity.displayNameString.isEmpty() || (entity.getUniqueID().version() == 2) || (entity.displayNameString.contains("§") && (entity.displayNameString.contains("SHOP") || entity.displayNameString.contains("UPGRADE"))))) {
+            true
+        } else {
+            for (name in getAllPlayerNamesFromTabList()) {
+                if (entity is EntityPlayer && entity.displayNameString.contains(name)) {
+                    return false
+                }
+            }
+            true
+        }
+    }
+
     fun renderHitbox(
         config: HitboxConfig,
         entity: Entity,
@@ -73,6 +106,16 @@ object HitboxRenderer {
         GL.pushMatrix()
         GL.translate(x, y, z)
 
+        val bot = isBot(entity)
+
+        if(config.ESP && !bot){
+            GL.disableDepth()
+        }
+
+        val isInList = entity is EntityPlayer && synchronized(list) {
+            list.contains(entity.gameProfile.id.toString().replace("-", ""))
+        }
+
         if (config.lineStyle == 2) {
             GL11.glPushAttrib(GL11.GL_ENABLE_BIT)
             GL11.glLineStipple(config.dashFactor, ALTERNATING_PATTERN)
@@ -84,13 +127,13 @@ object HitboxRenderer {
         val eyeHeight = entity.eyeHeight.toDouble()
         var hitbox: AxisAlignedBB
 
-        if(config.aboveGround) {hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY+0.101-0.05, -entity.posZ)}
+        if(config.aboveGround || bot) {hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY+0.101-0.05, -entity.posZ)}
         else {hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY, -entity.posZ)}
 
-        if (config.accurate && config.aboveGround) {
+        if (config.accurate && config.aboveGround || bot) {
             val border = entity.collisionBorderSize.toDouble()
             hitbox = hitbox.expand(border, border-0.055, border)
-        } else if(config.accurate && !config.aboveGround){
+        } else if(config.accurate){
             val border = entity.collisionBorderSize.toDouble()
             hitbox = hitbox.expand(border, border, border)
         }
@@ -98,7 +141,7 @@ object HitboxRenderer {
         val hovered = config.hoverColor && mc.objectMouseOver != null && MovingObjectPosition.MovingObjectType.ENTITY == mc.objectMouseOver.typeOfHit && entity == mc.objectMouseOver.entityHit
 
         if (config.showSide) drawSide(config, hitbox, hovered)
-        if (config.showOutline) drawBoxOutline(config, hitbox, if (hovered) config.outlineHoverColor else config.outlineColor, config.outlineThickness)
+        if (config.showOutline) drawBoxOutline(config, hitbox, if(isInList) OneColor(0, 255, 255, 255) else if (hovered) config.outlineHoverColor else config.outlineColor, config.outlineThickness)
         if (config.showEyeHeight) drawEyeHeight(config, hitbox, eyeHeight, hovered)
         if (config.showViewRay) drawViewRay(config, entity, hovered, partialTicks)
 
@@ -112,6 +155,7 @@ object HitboxRenderer {
         GL.enableCull()
         GL.disableBlend()
         GL.depthMask(true)
+        if(config.ESP && !bot) GL.enableDepth()
 
     }
 
