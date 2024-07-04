@@ -11,9 +11,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MovingObjectPosition
-import net.minecraftforge.client.event.RenderWorldLastEvent
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import org.polyfrost.polyhitbox.config.HitboxConfig
 import org.polyfrost.polyhitbox.config.ModConfig
@@ -33,29 +30,29 @@ object HitboxRenderer {
 
     var drawingWorld = false
 
-    init {
-        MinecraftForge.EVENT_BUS.register(this)
-    }
+    var drawingLayer = false
 
-    @SubscribeEvent
-    fun onRender(event: RenderWorldLastEvent) {
+    fun onRender() {
         if (!ModConfig.enabled) return
         if (renderQueue.isEmpty()) return
         GL.pushMatrix()
+        mc.entityRenderer.enableLightmap()
         for (info in renderQueue) {
             with(info) {
+                val i = if (entity.isBurning) 15728880 else entity.getBrightnessForRender(partialTicks)
+                val j = i % 65536
+                val k = i / 65536
+                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j.toFloat() / 1.0f, k.toFloat() / 1.0f)
                 renderHitbox(config, entity, x, y, z, partialTicks)
             }
         }
         renderQueue.clear()
+        mc.entityRenderer.disableLightmap()
         GL.popMatrix()
-        RenderHelper.disableStandardItemLighting()
-        GL.disableRescaleNormal()
-        GL.disableBlend()
     }
 
     fun tryAddToQueue(config: HitboxConfig, entity: Entity, x: Double, y: Double, z: Double, partialTicks: Float) {
-        if (drawingWorld) {
+        if (drawingWorld && !drawingLayer) {
             renderQueue.add(RenderInfo(config, entity, x, y, z, partialTicks))
         } else {
             renderHitbox(config, entity, x, y, z, partialTicks)
