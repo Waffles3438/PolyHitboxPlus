@@ -3,7 +3,7 @@ package org.polyfrost.polyhitbox.render
 import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.RenderHelper
+import net.minecraft.client.renderer.*
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.WorldRenderer
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
