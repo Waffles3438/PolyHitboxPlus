@@ -7,7 +7,6 @@
   "client": [
     "EntityMixin",
     "EntityRendererMixin",
-    "GuiInventoryMixin",
     "RenderManagerMixin"
   ]
 }
