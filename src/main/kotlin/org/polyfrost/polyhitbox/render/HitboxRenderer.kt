@@ -29,6 +29,7 @@ object HitboxRenderer {
     private val renderQueue = ArrayList<RenderInfo>()
 
     var drawingWorld = false
+    var drawingLayer = false
 
     init {
         MinecraftForge.EVENT_BUS.register(this)
