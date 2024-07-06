@@ -4,11 +4,10 @@ import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.*
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.WorldRenderer
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.projectile.EntityArrow
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MovingObjectPosition
 import net.minecraftforge.client.event.RenderWorldLastEvent
@@ -17,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import org.polyfrost.polyhitbox.config.HitboxConfig
 import org.polyfrost.polyhitbox.config.ModConfig
+import org.polyfrost.polyhitbox.mixin.EntityArrowAccessor
 import kotlin.math.atan2
 import kotlin.math.sqrt
 import net.minecraft.client.renderer.GlStateManager as GL
@@ -82,7 +82,10 @@ object HitboxRenderer {
                     return false
                 }
             }
-            true
+            if(entity is EntityPlayer) {
+                return true
+            }
+            false
         }
     }
 
@@ -125,10 +128,15 @@ object HitboxRenderer {
         val eyeHeight = entity.eyeHeight.toDouble()
         var hitbox: AxisAlignedBB
 
-        if(config.aboveGround || bot) {hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY+0.101-0.05, -entity.posZ)}
-        else {hitbox = entity.entityBoundingBox.offset(-entity.posX, -entity.posY, -entity.posZ)}
+        val grounded: Boolean = entity is EntityArrow && (entity as EntityArrowAccessor).getInGround()
 
-        if (config.accurate && config.aboveGround || bot) {
+        hitbox = if(config.aboveGround || bot || grounded) {
+            entity.entityBoundingBox.offset(-entity.posX, -entity.posY+0.101-0.05, -entity.posZ)
+        } else {
+            entity.entityBoundingBox.offset(-entity.posX, -entity.posY, -entity.posZ)
+        }
+
+        if (config.accurate && config.aboveGround || bot || grounded) {
             val border = entity.collisionBorderSize.toDouble()
             hitbox = hitbox.expand(border, border-0.055, border)
         } else if(config.accurate){
