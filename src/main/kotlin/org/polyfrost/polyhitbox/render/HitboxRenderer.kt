@@ -46,7 +46,6 @@ object HitboxRenderer {
         renderQueue.clear()
         mc.entityRenderer.disableLightmap()
         GL.popMatrix()
-        GL.disableBlend()
     }
 
     fun tryAddToQueue(config: HitboxConfig, entity: Entity, x: Double, y: Double, z: Double, partialTicks: Float) {
