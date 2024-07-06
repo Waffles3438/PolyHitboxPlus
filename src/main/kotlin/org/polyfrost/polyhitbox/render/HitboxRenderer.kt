@@ -25,9 +25,6 @@ object HitboxRenderer {
 
     private val renderQueue = ArrayList<RenderInfo>()
 
-    val list = ArrayList<String>()
-    val playerNames = ArrayList<String>()
-
     var drawingWorld = false
 
     var drawingLayer = false
@@ -49,6 +46,7 @@ object HitboxRenderer {
         renderQueue.clear()
         mc.entityRenderer.disableLightmap()
         GL.popMatrix()
+        GL.disableBlend()
     }
 
     fun tryAddToQueue(config: HitboxConfig, entity: Entity, x: Double, y: Double, z: Double, partialTicks: Float) {
@@ -109,8 +107,8 @@ object HitboxRenderer {
             GL.disableDepth()
         }
 
-        val isInList = entity is EntityPlayer && synchronized(list) {
-            list.contains(entity.gameProfile.id.toString().replace("-", ""))
+        val isInList = entity is EntityPlayer && synchronized(ModConfig.list) {
+            ModConfig.list.contains(entity.gameProfile.id.toString().replace("-", ""))
         }
 
         if (config.lineStyle == 2) {

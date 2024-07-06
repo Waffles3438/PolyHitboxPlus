@@ -24,6 +24,9 @@ object ModConfig : Config(Mod("Hitbox", ModType.PVP, "/${PolyHitbox.MODID}.svg")
 
     var toggleState = false
 
+    var list = ArrayList<String>()
+    var playerNames = ArrayList<String>()
+
     @CustomOption
     var configs = HashMap<HitboxCategory, HitboxConfig>()
 

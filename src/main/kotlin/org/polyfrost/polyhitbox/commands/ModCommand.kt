@@ -6,7 +6,7 @@ import cc.polyfrost.oneconfig.utils.commands.annotations.Command
 import cc.polyfrost.oneconfig.utils.commands.annotations.SubCommand
 import org.polyfrost.polyhitbox.PolyHitbox
 import cc.polyfrost.oneconfig.libs.universal.UChat
-import org.polyfrost.polyhitbox.render.HitboxRenderer
+import org.polyfrost.polyhitbox.config.ModConfig
 
 @Command(value = PolyHitbox.MODID)
 class ModCommand {
@@ -15,9 +15,9 @@ class ModCommand {
     fun add(player: String) {
         Multithreading.runAsync {
             try {
-                HitboxRenderer.list.add(NetworkUtils.getJsonElement("https://api.mojang.com/users/profiles/minecraft/$player").asJsonObject.get("id").asString)
+                ModConfig.list.add(NetworkUtils.getJsonElement("https://api.mojang.com/users/profiles/minecraft/$player").asJsonObject.get("id").asString)
                 UChat.chat("Added $player to friends list.")
-                HitboxRenderer.playerNames.add(player)
+                ModConfig.playerNames.add(player)
             } catch (_: Exception) {
                 UChat.chat("Player not found.")
             }
@@ -28,9 +28,9 @@ class ModCommand {
     fun remove(player: String) {
         Multithreading.runAsync {
             try {
-                HitboxRenderer.list.remove(NetworkUtils.getJsonElement("https://api.mojang.com/users/profiles/minecraft/$player").asJsonObject.get("id").asString)
+                ModConfig.list.remove(NetworkUtils.getJsonElement("https://api.mojang.com/users/profiles/minecraft/$player").asJsonObject.get("id").asString)
                 UChat.chat("Removed $player to friends list.")
-                HitboxRenderer.playerNames.remove(player)
+                ModConfig.playerNames.remove(player)
             } catch (_: Exception) {
                 UChat.chat("Player not found.")
             }
@@ -40,13 +40,13 @@ class ModCommand {
     @SubCommand
     fun list() {
         UChat.chat("Friends list:")
-        for(player in HitboxRenderer.playerNames) UChat.chat(player)
+        for(player in ModConfig.playerNames) UChat.chat(player)
     }
 
     @SubCommand
     fun clear(){
-        HitboxRenderer.list.clear()
-        HitboxRenderer.playerNames.clear()
+        ModConfig.list.clear()
+        ModConfig.playerNames.clear()
         UChat.chat("Cleared friends list.")
     }
 }
