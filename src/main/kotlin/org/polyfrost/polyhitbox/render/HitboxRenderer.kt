@@ -11,6 +11,9 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MovingObjectPosition
+import net.minecraftforge.client.event.RenderWorldLastEvent
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import org.polyfrost.polyhitbox.config.HitboxConfig
 import org.polyfrost.polyhitbox.config.ModConfig
@@ -26,8 +29,6 @@ object HitboxRenderer {
     private val renderQueue = ArrayList<RenderInfo>()
 
     var drawingWorld = false
-
-    var drawingLayer = false
 
     fun onRender() {
         if (!ModConfig.enabled) return
@@ -49,7 +50,7 @@ object HitboxRenderer {
     }
 
     fun tryAddToQueue(config: HitboxConfig, entity: Entity, x: Double, y: Double, z: Double, partialTicks: Float) {
-        if (drawingWorld && !drawingLayer) {
+        if (drawingWorld) {
             renderQueue.add(RenderInfo(config, entity, x, y, z, partialTicks))
         } else {
             renderHitbox(config, entity, x, y, z, partialTicks)
