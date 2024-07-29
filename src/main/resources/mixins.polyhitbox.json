@@ -10,5 +10,7 @@
     "LayerArrowMixin",
     "EntityArrowAccessor",
     "RenderManagerMixin"
+    "RenderManagerMixin",
+    "TileEntityMobSpawnerRendererMixin"
   ]
 }

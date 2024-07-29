@@ -29,7 +29,8 @@ object HitboxRenderer {
     private val renderQueue = ArrayList<RenderInfo>()
 
     var drawingWorld = false
-    var drawingLayer = false
+
+    var shouldCancel = false
 
     init {
         MinecraftForge.EVENT_BUS.register(this)
@@ -53,7 +54,7 @@ object HitboxRenderer {
     }
 
     fun tryAddToQueue(config: HitboxConfig, entity: Entity, x: Double, y: Double, z: Double, partialTicks: Float) {
-        if (drawingWorld) {
+        if (drawingWorld && !shouldCancel) {
             renderQueue.add(RenderInfo(config, entity, x, y, z, partialTicks))
         } else {
             renderHitbox(config, entity, x, y, z, partialTicks)
