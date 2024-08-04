@@ -61,6 +61,8 @@ public abstract class RenderManagerMixin {
         }
 
         return playerNames;
+    }
+
     @Redirect(method = "doRenderEntity", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/RenderManager;debugBoundingBox:Z"))
     private boolean redirectBoundingBox(RenderManager instance) {
         return ModConfig.INSTANCE.enabled || instance.isDebugBoundingBox();
