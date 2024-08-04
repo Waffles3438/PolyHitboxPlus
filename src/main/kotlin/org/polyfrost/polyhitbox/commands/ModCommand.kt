@@ -6,10 +6,17 @@ import cc.polyfrost.oneconfig.utils.commands.annotations.Command
 import cc.polyfrost.oneconfig.utils.commands.annotations.SubCommand
 import org.polyfrost.polyhitbox.PolyHitbox
 import cc.polyfrost.oneconfig.libs.universal.UChat
+import cc.polyfrost.oneconfig.utils.commands.annotations.Main
 import org.polyfrost.polyhitbox.config.ModConfig
 
-@Command(value = PolyHitbox.MODID)
+@Command(value = "h")
 class ModCommand {
+
+    @Main
+    fun main() {
+        UChat.chat("Friends list:")
+        for(player in ModConfig.playerNames) UChat.chat(player)
+    }
 
     @SubCommand
     fun add(player: String) {
@@ -35,12 +42,6 @@ class ModCommand {
                 UChat.chat("Player not found.")
             }
         }
-    }
-
-    @SubCommand
-    fun list() {
-        UChat.chat("Friends list:")
-        for(player in ModConfig.playerNames) UChat.chat(player)
     }
 
     @SubCommand
