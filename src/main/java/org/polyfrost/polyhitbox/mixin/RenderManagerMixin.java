@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import org.polyfrost.polyhitbox.hooks.EntityHook;
+import org.polyfrost.polyhitbox.config.ModConfig;
 import org.polyfrost.polyhitbox.hooks.MixinHooksKt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -60,5 +61,8 @@ public abstract class RenderManagerMixin {
         }
 
         return playerNames;
+    @Redirect(method = "doRenderEntity", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/RenderManager;debugBoundingBox:Z"))
+    private boolean redirectBoundingBox(RenderManager instance) {
+        return ModConfig.INSTANCE.enabled || instance.isDebugBoundingBox();
     }
 }
