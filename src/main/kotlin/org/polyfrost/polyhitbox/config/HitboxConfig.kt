@@ -32,6 +32,16 @@ class HitboxConfig {
     @Switch(name = "ESP")
     var ESP = false
 
+    @Switch(name = "Highlight invisibles")
+    var highlightInvis = false
+
+    @DependOn(["highlightInvis"])
+    @Color(name = "Invisible color")
+    var invisibleColor = OneColor(255, 255, 255, 255)
+
+    @Color(name = "Friend color")
+    var friendColor = OneColor(0, 255, 255, 255)
+
     @Checkbox(name = "Sides", size = 2)
     var showSide = false
 

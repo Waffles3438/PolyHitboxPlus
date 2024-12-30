@@ -148,7 +148,11 @@ object HitboxRenderer {
         val hovered = config.hoverColor && mc.objectMouseOver != null && MovingObjectPosition.MovingObjectType.ENTITY == mc.objectMouseOver.typeOfHit && entity == mc.objectMouseOver.entityHit
 
         if (config.showSide) drawSide(config, hitbox, hovered)
-        if (config.showOutline) drawBoxOutline(config, hitbox, if(isInList) OneColor(0, 255, 255, 255) else if (hovered) config.outlineHoverColor else config.outlineColor, config.outlineThickness)
+        if (config.showOutline) drawBoxOutline(config, hitbox,
+            if(isInList) config.friendColor
+            else if (config.highlightInvis && !bot && entity.isInvisible && (entity is EntityPlayer && !entity.capabilities.allowFlying)) config.invisibleColor
+            else if (hovered) config.outlineHoverColor
+            else config.outlineColor, config.outlineThickness)
         if (config.showEyeHeight) drawEyeHeight(config, hitbox, eyeHeight, hovered)
         if (config.showViewRay) drawViewRay(config, entity, hovered, partialTicks)
 
