@@ -14,8 +14,13 @@ class ModCommand {
 
     @Main
     fun main() {
-        UChat.chat("§bFriends list:")
-        for(player in ModConfig.playerNames) UChat.chat(player)
+        if(ModConfig.playerNames.isEmpty()) {
+            UChat.chat("§b[Hitboxes+] §cFriends list is empty!")
+            return
+        }
+        UChat.chat("§9----------------------------")
+        for(player in ModConfig.playerNames) UChat.chat("§e" + player)
+        UChat.chat("§9----------------------------")
     }
 
     @Main
@@ -23,24 +28,29 @@ class ModCommand {
         if(player.lowercase() == "clear"){
             ModConfig.list.clear()
             ModConfig.playerNames.clear()
-            UChat.chat("Cleared friends list.")
+            UChat.chat("§b[Hitboxes+] §cCleared friends list.")
             return
         } else if(player.lowercase() == "list"){
-            UChat.chat("§bFriends list:")
-            for(player in ModConfig.playerNames) UChat.chat(player)
+            if(ModConfig.playerNames.isEmpty()) {
+                UChat.chat("§b[Hitboxes+] §cFriends list is empty!")
+                return
+            }
+            UChat.chat("§9----------------------------")
+            for(player in ModConfig.playerNames) UChat.chat("§e" + player)
+            UChat.chat("§9----------------------------")
             return
         }
         Multithreading.runAsync {
             try {
                 if(ModConfig.playerNames.contains(player.lowercase())) {
-                    UChat.chat("$player is already in friends list.")
+                    UChat.chat("§b[Hitboxes+] §c$player is already in friends list.")
                 } else {
                     ModConfig.list.add(NetworkUtils.getJsonElement("https://api.mojang.com/users/profiles/minecraft/$player").asJsonObject.get("id").asString)
-                    UChat.chat("Added $player to friends list.")
+                    UChat.chat("§b[Hitboxes+] §aAdded $player to friends list.")
                     ModConfig.playerNames.add(player)
                 }
             } catch (_: Exception) {
-                UChat.chat("Player not found.")
+                UChat.chat("§b[Hitboxes+] §cPlayer not found.")
             }
         }
     }
@@ -50,14 +60,14 @@ class ModCommand {
         Multithreading.runAsync {
             try {
                 if(ModConfig.playerNames.contains(player.lowercase())) {
-                    UChat.chat("$player is already in friends list.")
+                    UChat.chat("§b[Hitboxes+] §c$player is already in friends list.")
                 } else {
                     ModConfig.list.add(NetworkUtils.getJsonElement("https://api.mojang.com/users/profiles/minecraft/$player").asJsonObject.get("id").asString)
-                    UChat.chat("Added $player to friends list.")
+                    UChat.chat("§b[Hitboxes+] §aAdded $player to friends list.")
                     ModConfig.playerNames.add(player)
                 }
             } catch (_: Exception) {
-                UChat.chat("Player not found.")
+                UChat.chat("§b[Hitboxes+] §cPlayer not found.")
             }
         }
     }
@@ -67,10 +77,10 @@ class ModCommand {
         Multithreading.runAsync {
             try {
                 ModConfig.list.remove(NetworkUtils.getJsonElement("https://api.mojang.com/users/profiles/minecraft/$player").asJsonObject.get("id").asString)
-                UChat.chat("Removed $player to friends list.")
+                UChat.chat("§b[Hitboxes+] §cRemoved $player to friends list.")
                 ModConfig.playerNames.remove(player.lowercase())
             } catch (_: Exception) {
-                UChat.chat("Player not found.")
+                UChat.chat("§b[Hitboxes+] §cPlayer not found.")
             }
         }
     }
